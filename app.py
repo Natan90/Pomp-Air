@@ -127,16 +127,37 @@ def valid_add_pompe():
     return redirect('/pompe/show')
 
 @app.route('/pompe/delete', methods=['GET'])
-def delete_jeu_plateau():
+def delete_pompe():
     id = request.args.get('id', '')
-    mycursor = get_db().cursor()
-    sql=''' DELETE FROM Pompe WHERE numero_pompe = %s'''
-    mycursor.execute(sql, (id,))
-    get_db().commit()
+    id = int(id)
+    try:
+        mycursor = get_db().cursor()
+        sql=''' DELETE FROM Pompe WHERE numero_pompe = %s'''
+        mycursor.execute(sql, (id,))
+        get_db().commit()
 
-    message = u'un jeu supprimé, id : ' + id
-    flash(message, 'alert-warning')
-    return redirect('/pompe/show')
+        message = u'un jeu supprimé, id : ' + id
+        flash(message, 'alert-warning')
+        return redirect('/pompe/show')
+    except Exception as e:
+        message = u'Erreur : la pompe est liée a un ou plusieurs achats'
+        flash(message, 'alert-danger')
+        return render_template('/pompe/delete-cascade')
+
+    return redirect('/pompe/delete_pompe.html')
+
+@app.route('/pompe/delete-cascade', methods=['GET'])
+def delete_pompe_cascade():
+    id = request.args.get('id', '')
+    id=int(id)
+    mycursor = get_db().cursor()
+    sql=''' SELECT COUNT DISTINCT id_achat FROM Achat WHERE numero_pompe = %s'''
+    mycursor.execute(sql)
+    achats = mycursor.fetchone()
+    return render_template('pompe/delete_pompe_cascade.html', achats=achats)
+
+
+
 
 @app.route('/pompe/edit', methods=['GET'])
 def edit_jeu_plateau():
