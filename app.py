@@ -128,6 +128,13 @@ def valid_add_pompe():
 
 @app.route('/pompe/delete', methods=['GET'])
 def delete_pompe():
+    id = request.args.get('id', '')
+    id=int(id)
+    mycursor = get_db().cursor()
+    sql=''' SELECT numero_pompe, poids, puissance, prix, id_modele FROM Pompe WHERE numero_pompe = %s'''
+    mycursor.execute(sql, (id,))
+    pompe = mycursor.fetchone()
+    return render_template('pompe/delete_pompe.html', pompe=pompe)
 
 
 @app.route('/pompe/delete-cascade', methods=['GET'])
