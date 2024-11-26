@@ -190,3 +190,83 @@ def valid_edit_jeu_plateau():
     print(message)
     flash(message, 'alert-success')
     return redirect('/pompe/show')
+
+
+
+
+
+#Partie intervention ..............................................................................................................
+
+@app.route('/intervention/show', methods=['GET'])
+def show_interventions():
+    mycursor = get_db().cursor()
+    sql = "SELECT id_intervention, date_intervention, descriptif_intervention, numero_pompe, id_client FROM intervention"
+    mycursor.execute(sql)
+    interventions = mycursor.fetchall()
+    return render_template('/intervention/show_intervention.html', intervention=interventions)
+
+@app.route('/intervention/add' , methods=['GET'])
+def add_intervention():
+    mycursor = get_db().cursor()
+    sql = "SELECT id_intervention, date_intervention, descriptif_intervention, numero_pompe, id_client FROM intervention"
+    mycursor.execute(sql)
+    intervention = mycursor.fetchall()
+    return render_template('intervention/add_intervention.html', intervention=intervention)
+
+@app.route('/intervention/add', methods=['POST'])
+def valid_add_intervention():
+    id = request.form.get('id_intervention')
+    date = request.form.get('date_intervention','')
+    descriptif = request.form.get('descriptif_intervention','')
+    num_pompe = request.form.get('numero_pompe')
+    if not date:
+        date = None  # Remplacer une valeur vide par None
+    if not descriptif:
+        descriptif = None  # Remplacer une valeur vide par None
+
+    id_client = request.form.get('id_client','')
+    # message = 'Le titre du film modifié est "' + titre +' " , il est sortie en ' + date + ' le réalisateur est ' + realisateur + ' le genre du film est ' + genre + '. Le film dure ' + duree + 'minutes et il a comme affiche ' + affiche
+    # print(message)
+    mycursor = get_db().cursor()
+    tuple_param = (id, date, descriptif, num_pompe, id_client)
+    sql = "INSERT INTO intervention(id_intervention, date_intervention, de scriptif_intervention, numero_pompe, id_client) VALUES (%s, %s, %s, %s, %s);"
+    mycursor.execute(sql,tuple_param)
+    get_db().commit()
+    flash(f"Le type d'intervention '{descriptif}' a été ajouté.", 'alert-success')
+    return redirect('/intervention/show')
+
+@app.route('/intervention/edit', methods=['GET'])
+def edit_intervention():
+    id = request.args.get('id_intervention','')
+    mycursor = get_db().cursor()
+    sql = "SELECT id_intervention, date_intervention, descriptif_intervention, numero_pompe, id_client FROM intervention WHERE id_intervention = %s"
+    mycursor.execute(sql, (id,))
+    intervention = mycursor.fetchall()
+    mycursor.execute(sql)
+    return render_template('intervention/edit_intervention.html', intervention=intervention)
+
+
+@app.route('/intervention/edit', methods=['POST'])
+def valid_edit_intervention():
+    print('''ajout de l'intervention dans le tableau''')
+    id = request.form.get('id_intervention', '')
+    date = request.form.get('date_intervention', '')
+    descriptif = request.form.get('descriptif_intervention', '')
+    num_pompe = request.form.get('numero_pompe')
+    id_client = request.form.get('id_client', '')
+    # message = (
+    #         'Le titre du film modifié est "' + titre +
+    #         '", il est sorti en ' + date +
+    #         ', le réalisateur est ' + realisateur +
+    #         ', le genre du film est ' + genre +
+    #         '. Le film dure ' + str(duree) +
+    #         ' minutes et il a comme affiche ' + affiche
+    # )
+    # print(message)
+    mycursor = get_db().cursor()
+    tuple_param = (date, descriptif, num_pompe, id_client, id)
+    sql = ("UPDATE intervention SET date = %s, descriptif = %s, num_pompe = %s, id_client = %s WHERE id_intervention = %s")
+
+    mycursor.execute(sql, tuple_param)
+    get_db().commit()
+    return redirect('/intervention/show')

@@ -1,0 +1,34 @@
+{% block title %}
+<title>Modifier une intervention</title>
+{% endblock %}
+
+{% block body %}
+<h2>Modifier une intervention</h2>
+
+<form method="post" action="/intervention/edit">
+   <input type="hidden" name="id" value="{{ intervention.id_intervention }}" id="id">
+   <fieldset>
+      <legend>Modifier une intervention</legend>
+
+      <label for="descriptif">Descriptif de l'intervention</label><br>
+      <select name="descriptif" id="descriptif" required>
+        {% for descriptif in descriptifs %}
+        <option value="{{ descriptif.descriptif_intervention }}" {% if descriptif.descriptif_intervention == intervention.descriptif_intervention %}selected{% endif %}>
+            {{ descriptif.descriptif_intervention }}
+        </option>
+        {% endfor %}
+      </select><br>
+
+      <label for="date">Date de l'intervention</label><br>
+      <input type="date" name="date" value="{{ intervention.date_intervention }}" id="date" required><br>
+
+      <label for="num_pompe">Numéro de la pompe</label><br>
+      <input type="text" name="num_pompe" size="18" value="{{ intervention.numero_pompe }}" id="num_pompe" required><br>
+
+      <label for="id_client">ID Client</label><br>
+      <input type="text" name="id_client" size="18" value="{{ intervention.id_client }}" id="id_client" required><br>
+
+      <input type="submit" value="Modifier" name="Modifier">
+   </fieldset>
+</form>
+{% endblock %}

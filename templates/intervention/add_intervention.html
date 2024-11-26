@@ -1,0 +1,57 @@
+<link rel="stylesheet" href="../static/intervention.css">
+{% block title %}
+<title>Ajouter un type d'intervention</title>
+{% endblock %}
+{% block body %}
+<h2>Ajout d'un type d'intervention</h2>
+<form method="post" action="/intervention/add">
+  <fieldset>
+    <legend>Créer un type d'intervention</legend>
+
+     <label for="descriptif">Descriptif de l'intervention</label><br />
+    <select id="descriptif" name="descriptif" required>
+      <option value="">Sélectionner un descriptif de l'intervention</option>
+      {% for intervention in intervention %}
+      <option value="{{ intervention.descriptif_intervention  }}">{{ intervention.descriptif_intervention }}</option>
+      {% endfor %}</select
+      required
+    /><br />
+
+    <label for="date_intervention">Date de l'intervention</label><br />
+    <input
+      id="date_intervention"
+      type="date"
+      name="date_intervention"
+      size="18"
+      value=""
+      required
+    /><br />
+
+    <label for="num_pompe">Numéro de la pompe</label><br />
+    <input
+      id="num_pompe"
+      type="text"
+      name="num_pompe"
+      size="18"
+      value=""
+      placeholder="Saisir le numéro de la pompe "
+      required
+    /><br />
+
+
+    <label for="id_client">Id client</label><br />
+    <input
+      id="id_client"
+      type="number"
+      name="id_client"
+      size="18"
+      value=""
+      placeholder="Saisir l'id de la pompe"
+      required
+    /><br /><br>
+
+
+    <input type="submit" value="Créer" name="Valider" />
+  </fieldset>
+</form>
+{% endblock %}
