@@ -14,9 +14,9 @@ def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
             host="localhost",                 # à modifier
-            user="nbouche",                     # à modifier
-            password="mdp",                # à modifier
-            database="BDD_sae",        # à modifier
+            user="nbigeard",                     # à modifier
+            password="azerty",                # à modifier
+            database="BDD_nbigeard_sae",        # à modifier
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
@@ -264,3 +264,16 @@ def valid_edit_intervention():
     mycursor.execute(sql, tuple_param)
     get_db().commit()
     return redirect('/intervention/show')
+
+@app.route('/intervention/delete', methods=['GET'])
+def delete_intervention():
+    id = request.args.get('id_intervention', '')
+    mycursor = get_db().cursor()
+    sql= "DELETE FROM intervention WHERE id_intervention = %s;"
+    tuple_param=(id,)
+    mycursor.execute(sql,tuple_param)
+    get_db().commit()
+    print(request.args.get('id'))
+    flash(f"L'intervention avec l'ID {id} a été supprimée.", 'alert-delete')
+    return redirect('/intervention/show')
+
