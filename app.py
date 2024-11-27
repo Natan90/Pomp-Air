@@ -277,3 +277,97 @@ def valid_edit_intervention():
     mycursor.execute(sql, tuple_param)
     get_db().commit()
     return redirect('/intervention/show')
+@app.route("/achat/add", methods=['GET'])
+def add_achat():
+    db=get_db()
+    curseur=db.cursor()
+
+    foreign_id_client='''select id_client,nom_client FROM Client'''
+    foreign_numero_pompe='''select numero_pompe,poids,puissance,prix from pompe'''
+
+    result_id_client=curseur.execute(foreign_id_client)
+    result_id_client=curseur.fetchall()
+    result_numero_pompe=curseur.execute(foreign_numero_pompe)
+    result_numero_pompe=curseur.fetchall()
+    print("liste _id",result_id_client)
+    print("liste _id",result_numero_pompe)
+    return render_template('/achat/add_achat.html',clients_id=result_id_client,pompes=result_numero_pompe)
+@app.route('/achat/add', methods=['POST'])
+def valid_add_achat():
+    mycursor = get_db().cursor()
+    id = request.form.get('id', '')
+    date_achat = request.form.get('date_achat', '')
+    date_installation = request.form.get('date_installation', '')
+    idClient = request.form.get('client', '')
+    idModele = request.form.get('idModele', '')
+    prix = request.form.get('prix', '')
+    print(prix)
+    sql=''' INSERT INTO achat (id_achat, date_achat, date_installation, id_client,numero_pompe ,prix_achat) VALUES (%s, %s, %s, %s,%s,%s)'''
+    mycursor.execute(sql, (id, date_achat, date_installation, idClient,idModele,prix))
+    get_db().commit()
+
+
+    flash("success", 'alert-success')
+    return redirect('/achat/show')
+@app.route('/achat/delete', methods=['GET'])
+def delete_achat():
+    id = request.args.get('id', '')
+    id = int(id)
+    mycursor = get_db().cursor()
+    sql=''' DELETE FROM achat WHERE id_achat = %s'''
+    mycursor.execute(sql, (id))
+    get_db().commit()
+
+    message = u'un achat supprimé, id : ' + str(id)
+    flash(message, 'alert-warning')
+    return redirect('/achat/show')
+@app.route('/achat/show')
+def show_achat():
+    mycursor = get_db().cursor()
+    mycursor.execute("SELECT * FROM achat")
+    achats = mycursor.fetchall()
+    return render_template('achat/show_achat.html', achats=achats)
+
+@app.route('/achat/edit', methods=['GET'])
+def edit_achat():
+    id = request.args.get('id', '')
+    id=int(id)
+    curseur = get_db().cursor()
+    sql=''' SELECT * FROM achat WHERE id_achat = %s'''
+    foreign_id_client='''select id_client,nom_client FROM Client'''
+    foreign_numero_pompe='''select numero_pompe,poids,puissance,prix from pompe'''
+    current_client_name='''select nom_client FROM Client WHERE id_client=%s'''
+    current_client_id='''select id_client FROM achat WHERE id_achat=%s'''
+
+    result_id_client=curseur.execute(foreign_id_client)
+    result_id_client=curseur.fetchall()
+    result_numero_pompe=curseur.execute(foreign_numero_pompe)
+    result_numero_pompe=curseur.fetchall()
+    result_current_client_id=curseur.execute(current_client_id,(id))
+    result_current_client_id=curseur.fetchone()
+    result_current_client_name=curseur.execute(current_client_name,(result_current_client_id["id_client"]))
+    result_current_client_name=curseur.fetchone()
+
+    curseur.execute(sql, (id))
+    achat = curseur.fetchone()
+
+
+
+    return render_template('/achat/edit_achat.html', achat=achat,clients_id=result_id_client,pompes=result_numero_pompe,ccn=result_current_client_name)
+@app.route('/achat/edit', methods=['POST'])
+def valid_edit_achat():
+    id = request.form.get('id', '')
+    date_achat = request.form.get('date_achat', '')
+    date_installation = request.form.get('date_installation', '')
+    id_client = request.form.get('id_client', '')
+    numero_pompe = request.form.get('numero_pompe', '')
+    prix = request.form.get('prix', '')
+    mycursor = get_db().cursor()
+    sql =''' UPDATE achat SET date_achat=%s, date_installation=%s, id_client=%s,numero_pompe=%s ,prix_achat=%s WHERE id_achat= %s'''
+    mycursor.execute(sql, (date_achat, date_installation,id_client,numero_pompe, prix, id))
+    get_db().commit()
+    message="un achat modifié: identifiant: %s , date d'achat: %s , date d'installation: %s , identifiant client: %s , numéro pompe: %s , prix: %s"%(
+    id,date_achat, date_installation,id_client,numero_pompe, prix)
+    print(message)
+    flash(message, 'alert-success')
+    return redirect('/achat/show')
