@@ -28,6 +28,9 @@ def teardown_db(exception):
     if db is not None:
         db.close()
 
+
+app.run()
+
 # DROP TABLE IF EXISTS Achat, Pompe, Intervention, Modele, Client;
 #
 # CREATE TABLE Client(
@@ -180,20 +183,25 @@ def edit_jeu_plateau():
     sql=''' SELECT numero_pompe AS id, puissance, poids, prix, id_modele FROM Pompe WHERE numero_pompe = %s'''
     mycursor.execute(sql, (id,))
     pompe = mycursor.fetchone()
+    mycursor = get_db().cursor()
+    sql=''' SELECT id_modele AS idModele, nom_modele FROM Modele '''
+    mycursor.execute(sql)
+    id_modele = mycursor.fetchall()
 
-    return render_template('/pompe/edit_pompe.html', pompe=pompe)
+    return render_template('/pompe/edit_pompe.html', pompe=pompe, id_modele=id_modele)
 
 @app.route('/pompe/edit', methods=['POST'])
-def valid_edit_jeu_plateau():
+def valid_edit_pompe():
     id = request.form.get('id', '')
     puissance = request.form.get('puissance', '')
     poids = request.form.get('poids', '')
     prix = request.form.get('prix', '')
+    id_modele = request.form.get('id_modele', '')
     mycursor = get_db().cursor()
-    sql =''' UPDATE Pompe SET puissance = %s, poids = %s, prix = %s WHERE numero_pompe= %s'''
-    mycursor.execute(sql, (puissance, poids, prix, id))
+    sql =''' UPDATE Pompe SET puissance = %s, poids = %s, prix = %s, id_modele = %s WHERE numero_pompe= %s'''
+    mycursor.execute(sql, (puissance, poids, prix, id_modele, id))
     get_db().commit()
-    message = u'jeu modifié, id : %s, puissance : %s, poids : %s, prix : %s' % (id, puissance, poids, prix)
+    message = u'jeu modifié, id : %s, puissance : %s, poids : %s, prix : %s' % (id, puissance, poids, str(id_modele), prix)
     print(message)
     flash(message, 'alert-success')
     return redirect('/pompe/show')
