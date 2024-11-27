@@ -1,0 +1,16 @@
+{% extends 'index.html' %}
+
+{% block title %}
+    <title>modifier un type de jeu</title>
+{% endblock %}
+
+{% block body %}
+  <h2>Modifier le type de jeu</h2>
+  <h3>Achats associés</h3>
+  <ul>
+    {% for achat in achats %}
+      <li>{{ achat }}</li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}

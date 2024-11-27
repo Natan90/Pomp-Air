@@ -1,0 +1,47 @@
+{% extends 'index.html' %}
+
+{% block title %}
+    <title>ajouter un achat</title>
+{% endblock %}
+
+{% block body %}
+  <h2>Ajouter un achat</h2>
+  <form method="post" action="/achat/add" >
+        <label for="id">Identifiant de l'achat</label><br>
+        <input id="id" type="number" name="id" size="18" value="" placeholder="Saisir l'id de l'achat" required><br>
+
+      <label for="date_achat">Date Achat</label><br>
+        <input id="date_achat" type="date" name="date_achat" size="18" value="" placeholder="Saisir la date de l'Achat " required><br>
+
+      <label for="date_installation">Date Installation</label><br>
+      <input id="date_installation" type="date" name="date_installation" size="18" value="" placeholder="Saisir la date de l'Installation " required><br>
+
+
+
+        <label for="client">Client</label><br>
+        <select id="client" type="number" name="client"  required>
+            <option value="" disabled selected>Choisir un client</option>
+            {% for id in clients_id %}
+              <option value="{{ id.id_client }}">
+                {{ id.nom_client }}
+              </option>
+            {% endfor %}
+        </select>
+        <br>
+        <select id="idModele" type="number" name="idModele"  required>
+          <option value="" disabled selected>Choisir une pompe</option>
+          {% for pompe in pompes %}
+            <option value="{{ pompe.numero_pompe }}">
+              poids: {{pompe.poids}}
+              puissance: {{pompe.puissance}}
+              prix: {{pompe.prix}}
+            </option>
+          {% endfor %}
+        </select>
+        <br>
+        <label for="prix">Prix</label><br>
+        <input id="prix" type="number" name="prix" size="18" value="" placeholder="Saisir l'id de l'achat" required><br>
+
+        <input type="submit" value="Creer" name="Valider" >
+  </form>
+{% endblock %}
