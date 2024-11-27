@@ -283,7 +283,7 @@ def add_achat():
     curseur=db.cursor()
 
     foreign_id_client='''select id_client,nom_client FROM Client'''
-    foreign_numero_pompe='''select numero_pompe,poids,puissance,prix from pompe'''
+    foreign_numero_pompe='''select numero_pompe,poids,puissance,prix from Pompe'''
 
     result_id_client=curseur.execute(foreign_id_client)
     result_id_client=curseur.fetchall()
@@ -300,7 +300,7 @@ def valid_add_achat():
     idClient = request.form.get('client', '')
     idModele = request.form.get('idModele', '')
     prix = request.form.get('prix', '')
-    sql=''' INSERT INTO achat (date_achat, date_installation, id_client,numero_pompe ,prix_achat) VALUES (%s, %s, %s,%s,%s)'''
+    sql=''' INSERT INTO Achat (date_achat, date_installation, id_client,numero_pompe ,prix_achat) VALUES (%s, %s, %s,%s,%s)'''
     mycursor.execute(sql, (date_achat, date_installation, idClient,idModele,prix))
     get_db().commit()
 
@@ -312,7 +312,7 @@ def delete_achat():
     id = request.args.get('id', '')
     id = int(id)
     mycursor = get_db().cursor()
-    sql=''' DELETE FROM achat WHERE id_achat = %s'''
+    sql=''' DELETE FROM Achat WHERE id_achat = %s'''
     mycursor.execute(sql, (id))
     get_db().commit()
 
@@ -331,11 +331,11 @@ def edit_achat():
     id = request.args.get('id', '')
     id=int(id)
     curseur = get_db().cursor()
-    sql=''' SELECT * FROM achat WHERE id_achat = %s'''
+    sql=''' SELECT * FROM Achat WHERE id_achat = %s'''
     foreign_id_client='''select id_client,nom_client FROM Client'''
-    foreign_numero_pompe='''select numero_pompe,poids,puissance,prix from pompe'''
+    foreign_numero_pompe='''select numero_pompe,poids,puissance,prix from Pompe'''
     current_client_name='''select nom_client FROM Client WHERE id_client=%s'''
-    current_client_id='''select id_client FROM achat WHERE id_achat=%s'''
+    current_client_id='''select id_client FROM Achat WHERE id_achat=%s'''
 
     result_id_client=curseur.execute(foreign_id_client)
     result_id_client=curseur.fetchall()
@@ -361,7 +361,7 @@ def valid_edit_achat():
     numero_pompe = request.form.get('numero_pompe', '')
     prix = request.form.get('prix', '')
     mycursor = get_db().cursor()
-    sql =''' UPDATE achat SET date_achat=%s, date_installation=%s, id_client=%s,numero_pompe=%s ,prix_achat=%s WHERE id_achat= %s'''
+    sql =''' UPDATE Achat SET date_achat=%s, date_installation=%s, id_client=%s,numero_pompe=%s ,prix_achat=%s WHERE id_achat= %s'''
     mycursor.execute(sql, (date_achat, date_installation,id_client,numero_pompe, prix, id))
     get_db().commit()
     message="un achat modifié: identifiant: %s , date d'achat: %s , date d'installation: %s , identifiant client: %s , numéro pompe: %s , prix: %s"%(
