@@ -295,15 +295,13 @@ def add_achat():
 @app.route('/achat/add', methods=['POST'])
 def valid_add_achat():
     mycursor = get_db().cursor()
-    id = request.form.get('id', '')
     date_achat = request.form.get('date_achat', '')
     date_installation = request.form.get('date_installation', '')
     idClient = request.form.get('client', '')
     idModele = request.form.get('idModele', '')
     prix = request.form.get('prix', '')
-    print(prix)
-    sql=''' INSERT INTO achat (id_achat, date_achat, date_installation, id_client,numero_pompe ,prix_achat) VALUES (%s, %s, %s, %s,%s,%s)'''
-    mycursor.execute(sql, (id, date_achat, date_installation, idClient,idModele,prix))
+    sql=''' INSERT INTO achat (date_achat, date_installation, id_client,numero_pompe ,prix_achat) VALUES (%s, %s, %s,%s,%s)'''
+    mycursor.execute(sql, (date_achat, date_installation, idClient,idModele,prix))
     get_db().commit()
 
 
