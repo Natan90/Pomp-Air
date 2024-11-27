@@ -1,0 +1,47 @@
+{% extends 'index.html' %}
+
+{% block title %}
+    <title>modifier un achat</title>
+{% endblock %}
+
+{% block body %}
+  <h2>Modifier un achat</h2>
+
+  <form method="post" action="/achat/edit">
+        <legend> Modifier un achat</legend>
+        <input type="hidden" name="id" size="18" value="{{ achat.id_achat }}" id="id" hidden>
+
+        <label for="date_achat">date achat</label><br>
+        <input type="date" name="date_achat" size="18" value="{{ achat.date_achat }}" id="date_achat"><br>
+
+        <label for="date_installation">date installation</label><br>
+        <input type="date" name="date_installation" size="18" value="{{ achat.date_installation }}" id="date_installation"><br>
+
+
+        <label for="id_client">Client</label><br>
+        <select id="id_client" type="number" name="id_client"  required>
+            <option value="{{ccn.nom_client}}" disabled selected>Nom client</option>
+            {% for id in clients_id %}
+              <option value="{{ id.id_client }}">
+                {{ id.nom_client }}
+              </option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="numero_pompe">Pompe</label><br>
+        <select id="numero_pompe" type="number" name="numero_pompe"  required>
+          <option value="{{achat.numero_pompe}}" disabled selected>Numéro Pompe</option>
+          {% for pompe in pompes %}
+            <option value="{{ pompe.numero_pompe }}">
+              {{pompe.numero_pompe}}
+            </option>
+          {% endfor %}
+        </select>
+        <br>
+
+        <label for="prix">Prix</label><br>
+        <input type="number" name="prix" size="18" value="{{ achat.prix_achat }}" id="prix"><br>
+
+        <input type="submit" value="Modifier" name="Modifier" >
+  </form>
+{% endblock %}
