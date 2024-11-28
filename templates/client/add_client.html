@@ -1,0 +1,49 @@
+{% extends 'index.html' %}
+
+{% block title %}
+    <title>ajouter un client</title>
+{% endblock %}
+
+
+{% block body %}
+  <h2>Ajouter un client</h2>
+  <form method="post" action="/client/add" >
+        <label for="nom_client">Nom</label><br>
+        <input id="nom_client" type="text" name="nom_client" size="18" value="" placeholder="Saisir le nom" required><br>
+
+        <label for="prenom_client">Prenom</label><br>
+        <input id="prenom_client" type="text" name="prenom_client" size="18" value="" placeholder="Saisir le prenom" required><br>
+
+        <label for="adresse">Adresse</label><br>
+        <input id="adresse" type="text" name="adresse" size="18" value="" placeholder="Saisir l'adresse" required><br>
+
+        <label for="telephone">Telephone</label><br>
+        <input id="telephone" type="text" name="telephone" size="18" value="" placeholder="Saisir le telephone" required><br>
+
+        <label for="adresse_mail">Adresse mail</label><br>
+        <input id="adresse_mail" type="text" name="adresse_mail" size="18" value="" placeholder="Saisir l'adresse mail" required><br>
+
+        <label for="id_client_1">Parainné par l'id client :</label><br>
+      <select id="id_client_1" name="id_client_1">
+    <option value="">Choisir un client</option>
+    {% for client in client %}
+        <option value="{{ client.id }}">{{ client.nom_client }} {{ client.prenom_client }}</option>
+    {% endfor %}
+</select><br>
+
+
+
+<!--        <label for="idModele">Modele de pompe</label><br>-->
+<!--        <select id="idModele" type="number" name="idModele"  required>-->
+<!--            <option value="" disabled selected>Choisir un modele de pompe</option>-->
+<!--    {% for id_modele in id_modele %}-->
+<!--<option value="{{ id_modele.idModele }}">-->
+<!--    {{ id_modele.nom_modele }}-->
+<!--</option>-->
+<!--            {% endfor %}-->
+
+<!--</select><br>-->
+
+        <input type="submit" value="Creer" name="Valider" >
+  </form>
+{% endblock %}

@@ -20,6 +20,17 @@
         <label for="prix">Prix</label><br>
         <input type="number" name="prix" size="18" value="{{ pompe.prix }}" id="prix"><br>
 
+        <label for="id_modele">Modele de pompe</label><br>
+        <select name="id_modele" id="id_modele">
+            <option value="" disabled selected>Choisir un modele de pompe</option>
+    {% for id_modele in id_modele %}
+<option value="{{ id_modele.idModele }}">
+    {{ id_modele.nom_modele }}
+</option>
+            {% endfor %}
+        </select><br>
+
+
         <input type="submit" value="Modifier" name="Modifier" >
   </form>
 {% endblock %}
