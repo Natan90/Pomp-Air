@@ -1,3 +1,4 @@
+{% extends "index.html" %}
 <link rel="stylesheet" href="../static/intervention.css">
 {% block title %}
 <title>Ajouter un type d'intervention</title>
@@ -8,14 +9,19 @@
   <fieldset>
     <legend>Créer un type d'intervention</legend>
 
-     <label for="descriptif">Descriptif de l'intervention</label><br />
-    <select id="descriptif" name="descriptif" required>
-      <option value="">Sélectionner un descriptif de l'intervention</option>
-      {% for intervention in intervention %}
-      <option value="{{ intervention.descriptif_intervention  }}">{{ intervention.descriptif_intervention }}</option>
-      {% endfor %}</select
+
+      <label for="descriptif_intervention">Date de l'intervention</label><br />
+    <input
+      id="descriptif_intervention"
+      type="varchar"
+      name="descriptif_intervention"
+      size="18"
+      value=""
+      placeholder="Saisir le desciptif de l'intervention"
+
       required
     /><br />
+
 
     <label for="date_intervention">Date de l'intervention</label><br />
     <input
@@ -27,28 +33,26 @@
       required
     /><br />
 
-    <label for="num_pompe">Numéro de la pompe</label><br />
-    <input
-      id="num_pompe"
-      type="text"
-      name="num_pompe"
-      size="18"
-      value=""
-      placeholder="Saisir le numéro de la pompe "
+
+    <label for="numero_pompe">Numéro de la pompe</label><br />
+    <select id="numero_pompe" name="numero_pompe" required>
+      <option value="">Sélectionner un numéro de pompe</option>
+      {% for numero_pompe in numero_pompe  %}
+      <option value="{{ numero_pompe.numero_pompe  }}">{{ numero_pompe.numero_pompe }}</option>
+      {% endfor %}</select
       required
     /><br />
 
 
-    <label for="id_client">Id client</label><br />
-    <input
-      id="id_client"
-      type="number"
-      name="id_client"
-      size="18"
-      value=""
-      placeholder="Saisir l'id de la pompe"
+
+    <label for="id_client">Id du client </label><br />
+    <select id="id_client" name="id_client" required>
+      <option value="">Sélectionner un id du client </option>
+      {% for id_client in id_client  %}
+      <option value="{{ id_client.id_client  }}">{{ id_client.id_client }}</option>
+      {% endfor %}</select
       required
-    /><br /><br>
+    /><br />
 
 
     <input type="submit" value="Créer" name="Valider" />

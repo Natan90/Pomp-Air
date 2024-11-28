@@ -1,3 +1,5 @@
+{% extends "index.html" %}
+
 <link rel="stylesheet" href="../static/intervention.css">
 {% block title %}
 <title>Afficher les types d'interventions</title>
@@ -31,8 +33,10 @@
         <td>{{ intervention.id_client }}</td>
         <td>
           <div class="edit_sup">
-            <a href="/intervention/edit/">éditer</a>
-            <a href="/intervention/delete">Supprimer</a>
+            <a href="/intervention/edit?id_intervention={{ intervention.id_intervention }}">Éditer</a>
+            <a href="/intervention/delete?id_intervention={{ intervention.id_intervention }}">Supprimer</a>
+
+
           </div>
         </td>
       </tr>
