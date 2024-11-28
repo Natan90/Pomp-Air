@@ -132,35 +132,66 @@ def valid_add_pompe():
 @app.route('/pompe/delete', methods=['GET'])
 def delete_pompe():
     id = request.args.get('id', '')
-    id=int(id)
-    mycursor = get_db().cursor()
-    sql=''' SELECT numero_pompe, poids, puissance, prix, id_modele FROM Pompe WHERE numero_pompe = %s'''
-    mycursor.execute(sql, (id,))
-    pompe = mycursor.fetchone()
-    return render_template('pompe/delete_pompe.html', pompe=pompe)
+    id = int(id)
+    try:
+
+        mycursor = get_db().cursor()
+        sql=''' DELETE FROM Pompe WHERE numero_pompe = %s'''
+        mycursor.execute(sql, (id,))
+        get_db().commit()
+        return redirect('/pompe/show')
+    except Exception as e:
+
+        print(e)
+        message = u'Erreur lors de la suppression de la pompe, id : %s' % id
+        flash(message, 'alert-danger')
+        return redirect(url_for('delete_pompe_cascade', id=id))
+    return redirect('/pompe/delete-cascade')
+
 
 
 @app.route('/pompe/delete-cascade', methods=['GET'])
 def delete_pompe_cascade():
     id = request.args.get('id', '')
     id=int(id)
-    mycursor = get_db().cursor()
-    sql=''' SELECT COUNT DISTINCT id_achat FROM Achat WHERE numero_pompe = %s'''
-    mycursor.execute(sql)
-    achats = mycursor.fetchone()
-    return render_template('pompe/delete_pompe.html', achats=achats)
 
-@app.route('/pompe/delete-cascade', methods=['POST'])
-def valid_delete_pompe_cascade():
-    id = request.form.get('id', '')
-    id = int(id)
     mycursor = get_db().cursor()
-    sql=''' DELETE FROM Pompe WHERE numero_pompe = %s'''
+    sql=''' SELECT COUNT(DISTINCT id_achat) AS achats FROM Achat WHERE numero_pompe = %s'''
+    mycursor.execute(sql, (id,))
+    total_achats = mycursor.fetchone()
+    mycursor = get_db().cursor()
+    sql=''' SELECT id_achat, date_achat, date_installation, id_client, prix_achat FROM Achat WHERE numero_pompe = %s'''
+    mycursor.execute(sql, (id,))
+    achats = mycursor.fetchall()
+    print(achats, 'achats')
+
+    return render_template('pompe/delete_pompe.html', total_achats= total_achats, achats=achats)
+
+@app.route('/pompe/achat-delete', methods=['GET'])
+def delete_pompe_achat():
+    id = request.args.get('id', '')
+    print(id, 'idddddddddddddddddddddddddddddd')
+    id = int(id)
+
+    mycursor = get_db().cursor()
+    sql=''' DELETE FROM Achat WHERE id_achat = %s'''
     mycursor.execute(sql, (id,))
     get_db().commit()
-    message = u'pompe supprimée, id : %s' % id
+    message = u'achat supprimé, id : %s', id
     flash(message, 'alert-warning')
-    return redirect('/pompe/show')
+    return redirect('/pompe/delete-cascade')
+
+# @app.route('/pompe/delete-cascade', methods=['POST'])
+# def valid_delete_pompe_cascade():
+#     id = request.form.get('id', '')
+#     id = int(id)
+#     mycursor = get_db().cursor()
+#     sql=''' DELETE FROM Pompe WHERE numero_pompe = %s'''
+#     mycursor.execute(sql, (id,))
+#     get_db().commit()
+#     message = u'pompe supprimée, id : %s' % id
+#     flash(message, 'alert-warning')
+#     return redirect('/pompe/show')
 
 # @app.route('/pompe/delete-cascade', methods=['GET'])
 # def delete_pompe_cascade():
@@ -201,7 +232,7 @@ def valid_edit_pompe():
     sql =''' UPDATE Pompe SET puissance = %s, poids = %s, prix = %s, id_modele = %s WHERE numero_pompe= %s'''
     mycursor.execute(sql, (puissance, poids, prix, id_modele, id))
     get_db().commit()
-    message = u'jeu modifié, id : %s, puissance : %s, poids : %s, prix : %s' % (id, puissance, poids, str(id_modele), prix)
+    message = u'jeu modifié, id : %s, puissance : %s, poids : %s, prix : %s' % (id, puissance, poids, prix)
     print(message)
     flash(message, 'alert-success')
     return redirect('/pompe/show')

@@ -61,6 +61,8 @@ INSERT INTO Client (id_client, nom_client, prenom_client, adresse, telephone, ad
 (4, 'Bernard', 'Sophie', '10 Rue de la Gare', '0622334455', 'sophie.bernard@example.com', 3),
 (5, 'Lefevre', 'Luc', '22 Rue des Lilas', '0633445566', 'luc.lefevre@example.com', NULL);
 
+
+
 INSERT INTO Modele (id_modele, nom_modele, caracteristique) VALUES
 (1, 'Pompe-X1', 'Pompe à haute pression'),
 (2, 'Pompe-Y2', 'Pompe à débit rapide'),
