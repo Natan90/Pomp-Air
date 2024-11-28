@@ -322,7 +322,7 @@ def add_achat():
     curseur=db.cursor()
 
     foreign_id_client='''select id_client,nom_client FROM Client'''
-    foreign_numero_pompe='''select numero_pompe,poids,puissance,prix from Pompe'''
+    foreign_numero_pompe='''select numero_pompe,poids,puissance,prix from pompe'''
 
     result_id_client=curseur.execute(foreign_id_client)
     result_id_client=curseur.fetchall()
@@ -334,13 +334,15 @@ def add_achat():
 @app.route('/achat/add', methods=['POST'])
 def valid_add_achat():
     mycursor = get_db().cursor()
+    id = request.form.get('id', '')
     date_achat = request.form.get('date_achat', '')
     date_installation = request.form.get('date_installation', '')
     idClient = request.form.get('client', '')
     idModele = request.form.get('idModele', '')
     prix = request.form.get('prix', '')
-    sql=''' INSERT INTO Achat (date_achat, date_installation, id_client,numero_pompe ,prix_achat) VALUES (%s, %s, %s,%s,%s)'''
-    mycursor.execute(sql, (date_achat, date_installation, idClient,idModele,prix))
+    print(prix)
+    sql=''' INSERT INTO achat (id_achat, date_achat, date_installation, id_client,numero_pompe ,prix_achat) VALUES (%s, %s, %s, %s,%s,%s)'''
+    mycursor.execute(sql, (id, date_achat, date_installation, idClient,idModele,prix))
     get_db().commit()
 
 
@@ -351,7 +353,7 @@ def delete_achat():
     id = request.args.get('id', '')
     id = int(id)
     mycursor = get_db().cursor()
-    sql=''' DELETE FROM Achat WHERE id_achat = %s'''
+    sql=''' DELETE FROM achat WHERE id_achat = %s'''
     mycursor.execute(sql, (id))
     get_db().commit()
 
@@ -370,11 +372,11 @@ def edit_achat():
     id = request.args.get('id', '')
     id=int(id)
     curseur = get_db().cursor()
-    sql=''' SELECT * FROM Achat WHERE id_achat = %s'''
+    sql=''' SELECT * FROM achat WHERE id_achat = %s'''
     foreign_id_client='''select id_client,nom_client FROM Client'''
-    foreign_numero_pompe='''select numero_pompe,poids,puissance,prix from Pompe'''
+    foreign_numero_pompe='''select numero_pompe,poids,puissance,prix from pompe'''
     current_client_name='''select nom_client FROM Client WHERE id_client=%s'''
-    current_client_id='''select id_client FROM Achat WHERE id_achat=%s'''
+    current_client_id='''select id_client FROM achat WHERE id_achat=%s'''
 
     result_id_client=curseur.execute(foreign_id_client)
     result_id_client=curseur.fetchall()
@@ -400,7 +402,7 @@ def valid_edit_achat():
     numero_pompe = request.form.get('numero_pompe', '')
     prix = request.form.get('prix', '')
     mycursor = get_db().cursor()
-    sql =''' UPDATE Achat SET date_achat=%s, date_installation=%s, id_client=%s,numero_pompe=%s ,prix_achat=%s WHERE id_achat= %s'''
+    sql =''' UPDATE achat SET date_achat=%s, date_installation=%s, id_client=%s,numero_pompe=%s ,prix_achat=%s WHERE id_achat= %s'''
     mycursor.execute(sql, (date_achat, date_installation,id_client,numero_pompe, prix, id))
     get_db().commit()
     message="un achat modifié: identifiant: %s , date d'achat: %s , date d'installation: %s , identifiant client: %s , numéro pompe: %s , prix: %s"%(
@@ -408,3 +410,52 @@ def valid_edit_achat():
     print(message)
     flash(message, 'alert-success')
     return redirect('/achat/show')
+
+#------------------------------CLIENT --------------------------------------------
+
+@app.route('/client/show', methods=['GET'])
+def show_client():
+    mycursor = get_db().cursor()
+    sql='''SELECT id_client AS id , nom_client, prenom_client, adresse, telephone, adresse_mail, id_client_1 FROM Client'''
+    mycursor.execute(sql)
+    client = mycursor.fetchall()
+
+    return render_template('client/show_client.html', client=client)
+
+@app.route('/client/add', methods=['GET'])
+def add_client():
+    mycursor = get_db().cursor()
+    sql=''' SELECT id_client AS id, nom_client FROM Client'''
+    mycursor.execute(sql)
+    client = mycursor.fetchall()
+    return render_template('client/add_client.html', client=client)
+
+@app.route('/client/add', methods=['POST'])
+def valid_add_client():
+    mycursor = get_db().cursor()
+    # id = request.form.get('id', '')
+    nom = request.form.get('nom_client', '')
+    prenom = request.form.get('prenom_client', '')
+    adresse = request.form.get('adresse', '')
+    telephone = request.form.get('telephone', '')
+    mail = request.form.get('adresse_mail', '')
+    id_client_1 = request.form.get('id_client_1', None)
+    sql=''' INSERT INTO Client (nom_client, prenom_client, adresse, telephone, adresse_mail, id_client_1) VALUES (%s, %s, %s, %s, %s, %s)'''
+    mycursor.execute(sql, (nom, prenom, adresse, telephone, mail, id_client_1))
+    get_db().commit()
+    message = u'client ajouté, id : %s, nom : %s, prenom : %s, adresse : %s, telephone : %s, mail : %s, id_client_1 : %s' % (id, nom, prenom, adresse, telephone, mail, id_client_1)
+    flash(message, 'alert-success')
+    return redirect('/client/show')
+
+@app.route('/client/delete', methods=['GET'])
+def delete_client():
+    id = request.args.get('id', '')
+    id = int(id)
+    mycursor = get_db().cursor()
+    sql=''' DELETE FROM Client WHERE id_client = %s'''
+    mycursor.execute(sql, (id))
+    get_db().commit()
+    message = u'client supprimé, id : %s' % id
+    flash(message, 'alert-warning')
+    return redirect('/client/show')
+

@@ -1,0 +1,46 @@
+{% extends 'index.html' %}
+
+{% block title %}
+    <title>afficher les types de jeux</title>
+{% endblock %}
+
+{% block body %}
+<h3>Liste des types de jeu</h3>
+<div class="corps">
+<br><br>
+    <a href="/client/add">Ajouter une client</a>
+
+<table class="tableau">
+    <thead class="head-tableau">
+        <tr>
+            <th>n°client</th><th>nom</th><th>prenom</th><th>adresse</th><th>telephone</th><th>adresse mail</th><th>parainné par l'id client :</th><th>opération</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% if client | length >= 1 %}
+        {% for client in client %}
+           <tr>
+                  <td>{{ client.id }}</td>
+                  <td>{{ client.nom_client }}</td>
+                  <td>{{ client.prenom_client }}</td>
+                  <td>{{ client.adresse}}</td>
+                  <td>{{ client.telephone}}</td>
+                  <td>{{ client.adresse_mail}}</td>
+                  <td>{{ client.id_client_1}}</td>
+                  <td class="boutons">
+                        <a href="/client/edit?id={{ client.id }}">editer</a>&nbsp;
+                        <a href="/client/delete?id={{ client.id }}" >supprimer</a>
+                  </td>
+           </tr>
+        {% endfor %}
+    {% else %}
+            <tr>
+                  <td>
+                      pas de type de client à afficher
+                  </td>
+           </tr>
+    {% endif %}
+    </tbody>
+</table>
+</div>
+{% endblock %}
