@@ -8,8 +8,9 @@
 <h3>Liste des achat</h3>
 <div class="corps">
 <br><br>
-    <a href="/achat/add">Ajouter un achat</a>
-
+    <a href="/achat/add">Ajouter un achat</a><br>
+<a>Nombre d'achats: {{moyenne.get("COUNT(id_achat)")}}</a><br>
+<a>Moyenne des prix des achats: {{moyenne.get("AVG(prix_achat)")}}</a><br>
 <table class="tableau">
     <thead class="head-tableau">
         <tr>
