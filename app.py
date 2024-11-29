@@ -14,9 +14,9 @@ def get_db():
     if 'db' not in g:
         g.db =  pymysql.connect(
             host="localhost",                 # à modifier
-            user="nbigeard",                     # à modifier
-            password="azerty",                # à modifier
-            database="BDD_nbigeard_sae",        # à modifier
+            user="nbouche",                     # à modifier
+            password="mdp",                # à modifier
+            database="BDD_sae",        # à modifier
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
@@ -130,59 +130,89 @@ def valid_add_pompe():
 def delete_pompe():
     id = request.args.get('id', '')
     id = int(id)
+
     try:
         mycursor = get_db().cursor()
-        sql=''' DELETE FROM Pompe WHERE numero_pompe = %s'''
+
+        sql = '''SELECT COUNT(*) AS count FROM Achat WHERE numero_pompe = %s'''
+        mycursor.execute(sql, (id,))
+        achats = mycursor.fetchone()['count']
+
+        sql = '''SELECT COUNT(*) AS count FROM Intervention WHERE numero_pompe = %s'''
+        mycursor.execute(sql, (id,))
+        interventions = mycursor.fetchone()['count']
+
+        if achats > 0 or interventions > 0:
+            message = u'Erreur : la pompe est liée à un ou plusieurs achats ou interventions'
+            flash(message, 'alert-danger')
+            return redirect('/pompe/delete-cascade?id=%s' % id)
+
+        sql = '''DELETE FROM Pompe WHERE numero_pompe = %s'''
         mycursor.execute(sql, (id,))
         get_db().commit()
 
-        message = u'un jeu supprimé, id : ' + id
+        message = u'Pompe supprimée, id : ' + str(id)
         flash(message, 'alert-warning')
         return redirect('/pompe/show')
     except Exception as e:
-        message = u'Erreur : la pompe est liée a un ou plusieurs achats'
+        message = u'Erreur lors de la suppression de la pompe'
         flash(message, 'alert-danger')
-        return render_template('/pompe/delete-cascade')
-
-    return redirect('/pompe/delete_pompe.html')
+        return redirect('/pompe/show')
 
 @app.route('/pompe/delete-cascade', methods=['GET'])
 def delete_pompe_cascade():
     id = request.args.get('id', '')
     id=int(id)
     mycursor = get_db().cursor()
-    sql=''' SELECT COUNT DISTINCT id_achat FROM Achat WHERE numero_pompe = %s'''
-    mycursor.execute(sql)
-    achats = mycursor.fetchone()
-    return render_template('pompe/delete_pompe_cascade.html', achats=achats)
+    sql = '''SELECT id_achat, date_achat, date_installation, id_client, numero_pompe FROM Achat WHERE numero_pompe = %s'''
+    mycursor.execute(sql, (id,))
+    achats = mycursor.fetchall()
 
-
-
-
-@app.route('/pompe/edit', methods=['GET'])
-def edit_jeu_plateau():
-    id = request.args.get('id', '')
-    id=int(id)
     mycursor = get_db().cursor()
-    sql=''' SELECT numero_pompe AS id, puissance, poids, prix, id_modele FROM Pompe WHERE numero_pompe = %s'''
+    sql = '''SELECT id_intervention, date_intervention, descriptif_intervention, numero_pompe, id_client FROM Intervention WHERE numero_pompe = %s'''
+    mycursor.execute(sql, (id,))
+    interventions = mycursor.fetchall()
+
+    mycursor = get_db().cursor()
+    sql=''' SELECT numero_pompe AS id FROM Pompe WHERE numero_pompe = %s'''
     mycursor.execute(sql, (id,))
     pompe = mycursor.fetchone()
 
-    return render_template('/pompe/edit_pompe.html', pompe=pompe)
 
-@app.route('/pompe/edit', methods=['POST'])
-def valid_edit_jeu_plateau():
-    id = request.form.get('id', '')
-    puissance = request.form.get('puissance', '')
-    poids = request.form.get('poids', '')
-    prix = request.form.get('prix', '')
+
+
+
+
+    return render_template('pompe/delete_pompe.html', achats=achats, interventions=interventions, pompe=pompe)
+
+@app.route('/pompe/achat-delete', methods=['GET'])
+def delete_pompe_achat():
+    id = request.args.get('id', '')
+    id = int(id)
     mycursor = get_db().cursor()
-    sql =''' UPDATE Pompe SET puissance = %s, poids = %s, prix = %s WHERE numero_pompe= %s'''
-    mycursor.execute(sql, (puissance, poids, prix, id))
+    sql = ''' DELETE FROM Achat WHERE id_achat = %s'''
+    mycursor.execute(sql, (id,))
     get_db().commit()
-    message = u'jeu modifié, id : %s, puissance : %s, poids : %s, prix : %s' % (id, puissance, poids, prix)
-    print(message)
-    flash(message, 'alert-success')
+    return redirect('/pompe/delete-cascade?id=%s' % (id))
+
+@app.route('/pompe/intervention-delete', methods=['GET'])
+def delete_pompe_intervention():
+    id = request.args.get('id', '')
+    id = int(id)
+    mycursor = get_db().cursor()
+    sql = ''' DELETE FROM Intervention WHERE id_intervention = %s'''
+    mycursor.execute(sql, (id,))
+    get_db().commit()
+    return redirect('/pompe/delete-cascade?id=%s' % (id))
+
+@app.route('/pompe/delete-confirm', methods=['GET'])
+def delete_pompe_confirm():
+    id = request.args.get('id', '')
+    id = int(id)
+    mycursor = get_db().cursor()
+    sql = ''' DELETE FROM Pompe WHERE numero_pompe = %s'''
+    mycursor.execute(sql, (id,))
+    get_db().commit()
     return redirect('/pompe/show')
 
 
