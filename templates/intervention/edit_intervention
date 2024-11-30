@@ -1,0 +1,65 @@
+{% extends "index.html" %}
+{% block title %}
+<title>Modifier une intervention</title>
+{% endblock %}
+
+{% block body %}
+<h2>Modifier une intervention</h2>
+
+<form method="post" action="/intervention/edit">
+   <input type="hidden" name="id_intervention" value="{{ intervention.id_intervention }}" id="id_intervention">
+
+      <legend>Modifier une intervention</legend>
+
+
+       <label for="descriptif_intervention">Descriptif  de l'intervention</label><br>
+      <input type="text" name="descriptif_intervention" value="{{ intervention.descriptif_intervention }}" id="descriptif_intervention" required><br>
+
+
+      <label for="date_intervention">Date de l'intervention</label><br>
+      <input type="date" name="date_intervention" value="{{ intervention.date_intervention }}" id="date_intervention" required><br>
+
+
+      <label for="duree">Durée de l'intervention</label><br>
+      <input type="number" name="duree" value="{{ intervention.duree }}" id="duree" required><br>
+
+
+
+        <label for="numero_pompe">numero de la pompe </label><br>
+      <select name="numero_pompe" id="numero_pompe" required>
+        {% for numero_pompe in numero_pompe %}
+          {% if numero_pompe.numero_pompe == current_pompe.numero_pompe %}
+            <option value="{{ numero_pompe.numero_pompe }}" selected>
+                {{ numero_pompe.numero_pompe }}
+          {% else %}
+            <option value="{{ numero_pompe.numero_pompe }}">
+            {{ numero_pompe.numero_pompe }}
+        </option>
+          {% endif %}
+        {% endfor %}
+      </select><br>
+
+
+
+  <label for="id_client">Id du client </label><br>
+      <select name="id_client" id="id_client" required>
+        {% for id_client in id_client %}
+          {% if id_client.id_client == current_client.id_client %}
+            <option value="{{ id_client.id_client }}" selected>
+                {{ id_client.id_client }}
+          {%else%}
+                <option value="{{ id_client.id_client }}" >
+            {{ id_client.id_client }}
+        </option>
+                    {% endif %}
+
+        {% endfor %}
+      </select><br>
+
+
+
+
+      <input type="submit" value="Modifier" name="Modifier">
+
+</form>
+{% endblock %}
