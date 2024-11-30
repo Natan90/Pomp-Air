@@ -224,7 +224,7 @@ def delete_pompe_confirm():
 @app.route('/intervention/show', methods=['GET'])
 def show_interventions():
     mycursor = get_db().cursor()
-    sql = "SELECT id_intervention, date_intervention, descriptif_intervention, numero_pompe, id_client FROM Intervention"
+    sql = "SELECT id_intervention, date_intervention, duree, descriptif_intervention, numero_pompe, id_client FROM Intervention"
     mycursor.execute(sql)
     interventions = mycursor.fetchall()
     return render_template('/intervention/show_intervention.html', intervention=interventions)
@@ -232,10 +232,10 @@ def show_interventions():
 @app.route('/intervention/add' , methods=['GET'])
 def add_intervention():
     mycursor = get_db().cursor()
-    sql = "SELECT id_intervention, date_intervention, descriptif_intervention, numero_pompe, id_client FROM Intervention"
+    sql = "SELECT id_intervention, date_intervention, duree, descriptif_intervention, numero_pompe, id_client FROM Intervention"
     mycursor.execute(sql)
     intervention = mycursor.fetchall()
-    sql_num = "SELECT DISTINCT numero_pompe FROM Intervention"
+    sql_num = "SELECT DISTINCT numero_pompe FROM Intervention "
     mycursor.execute(sql_num)
     numero_pompe = mycursor.fetchall()
     sql_client = "SELECT DISTINCT id_client FROM Intervention"
@@ -248,11 +248,12 @@ def valid_add_intervention():
     id = request.form.get('id_intervention')
     date = request.form.get('date_intervention','')
     descriptif_intervention = request.form.get('descriptif_intervention','')
+    duree = request.form.get('duree','')
     numero_pompe = request.form.get('numero_pompe')
     id_client = request.form.get('id_client','')
     mycursor = get_db().cursor()
-    tuple_param = (id, date, descriptif_intervention, numero_pompe, id_client)
-    sql = "INSERT INTO Intervention(id_intervention, date_intervention, descriptif_intervention , numero_pompe, id_client) VALUES (%s, %s, %s, %s, %s);"
+    tuple_param = (id, date, descriptif_intervention, duree, numero_pompe, id_client)
+    sql = "INSERT INTO Intervention(id_intervention, date_intervention, descriptif_intervention, duree , numero_pompe, id_client) VALUES (%s, %s, %s, %s, %s, %s        );"
     mycursor.execute(sql,tuple_param)
     get_db().commit()
     flash(f"Le type d'intervention '{descriptif_intervention}' a été ajouté.", 'alert-success')
@@ -260,50 +261,47 @@ def valid_add_intervention():
 
 @app.route('/intervention/edit', methods=['GET'])
 def edit_intervention():
-    id= request.args.get('id')
+    id= request.args.get('id_intervention')
     mycursor = get_db().cursor()
-    sql = '''SELECT id_intervention, date_intervention, descriptif_intervention, numero_pompe, id_client FROM Intervention 
-             WHERE id_intervention = %s'''
-    mycursor.execute(sql, (id,))
+    print(id)
+    sql = '''SELECT * FROM Intervention WHERE id_intervention = %s'''
+    mycursor.execute(sql, (id))
     intervention = mycursor.fetchall()
-    sql_client = "SELECT DISTINCT id_client FROM Intervention"
+    print(intervention[0].keys())
+    sql_client = "SELECT id_client FROM Client"
     mycursor.execute(str(sql_client))
     id_client = mycursor.fetchall()
-    sql_numero_pompe = "SELECT DISTINCT numero_pompe FROM Intervention"
+    sql_numero_pompe = "SELECT numero_pompe FROM Pompe"
     mycursor.execute(sql_numero_pompe)
     numero_pompe = mycursor.fetchall()
-    return render_template('intervention/edit_intervention.html', intervention=intervention, numero_pompe=numero_pompe, id_client=id_client)
+    sql_numero_pompe_current = "SELECT numero_pompe FROM intervention where id_intervention=%s"
+    mycursor.execute(sql_numero_pompe_current, (id,))
+    sql_numero_pompe_current = mycursor.fetchone()
+    sql_id_client_current = "SELECT id_client FROM intervention where id_intervention=%s"
+    mycursor.execute(sql_id_client_current, (id,))
+    sql_id_client_current = mycursor.fetchone()
+    return render_template('intervention/edit_intervention.html', intervention=intervention[0], numero_pompe=numero_pompe, id_client=id_client,current_client=sql_id_client_current,current_pompe=sql_numero_pompe_current)
 
-# id = request.args.get('id')
-#     mycursor = get_db().cursor()
-#     sql_film = '''SELECT id_film, titre_film, date_sortie, nom_realisateur, genre_id, duree_film, affiche FROM film
-#                   WHERE id_film=%s;'''
-#     mycursor.execute(sql_film, (id,))
-#     film = mycursor.fetchone()
-#     sql_genres = '''SELECT id_genre AS genre_id, libelle_genre FROM genre_film;'''
-#     mycursor.execute(sql_genres)
-#     genresFilms = mycursor.fetchall()
-#     return render_template('film/edit_film.html', film=film, genresFilms=genresFilms)
 
 @app.route('/intervention/edit', methods=['POST'])
 def valid_edit_intervention():
     print('''ajout de l'intervention dans le tableau''')
-    id = request.form.get('id_intervention', '')
-    date = request.form.get('date_intervention', '')
+    id_intervention = request.form.get('id_intervention', '')
+    date_intervention = request.form.get('date_intervention', '')
     descriptif_intervention = request.form.get('descriptif_intervention', '')
+    duree = request.form.get('duree', '')
     numero_pompe = request.form.get('numero_pompe')
     id_client = request.form.get('id_client', '')
     mycursor = get_db().cursor()
-    tuple_param = (date, descriptif_intervention    , numero_pompe, id_client, id)
-    sql = ("UPDATE Intervention SET date = %s, descriptif_intervention = %s, num_pompe = %s, id_client = %s WHERE id_intervention = %s")
+    tuple_param = (date_intervention, descriptif_intervention, duree, numero_pompe, id_client, id_intervention)
+    sql = ("UPDATE Intervention SET date_intervention = %s, descriptif_intervention = %s, duree= %s, numero_pompe = %s, id_client = %s WHERE id_intervention = %s")
     mycursor.execute(sql, tuple_param)
     get_db().commit()
     return redirect('/intervention/show')
 
 @app.route('/intervention/delete', methods=['GET'])
 def delete_intervention():
-    id = request.args.get('id_intervention', '').strip()
-    # id = int(id)
+    id = request.args.get('id_intervention', '')
     mycursor = get_db().cursor()
     sql="DELETE FROM Intervention WHERE id_intervention=%s;"
     mycursor.execute(sql, (id,))
