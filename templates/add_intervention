@@ -1,0 +1,72 @@
+{% extends "index.html" %}
+<link rel="stylesheet" href="../static/intervention.css">
+{% block title %}
+<title>Ajouter un type d'intervention</title>
+{% endblock %}
+{% block body %}
+<h2>Ajout d'un type d'intervention</h2>
+<form method="post" action="/intervention/add">
+  <fieldset>
+    <legend>Créer un type d'intervention</legend>
+
+
+      <label for="descriptif_intervention">Descriptif de l'intervention</label><br />
+    <input
+      id="descriptif_intervention"
+      type="varchar"
+      name="descriptif_intervention"
+      size="18"
+      value=""
+      placeholder="Saisir le desciptif de l'intervention"
+
+      required
+    /><br />
+
+
+    <label for="date_intervention">Date de l'intervention</label><br />
+    <input
+      id="date_intervention"
+      type="date"
+      name="date_intervention"
+      size="18"
+      value=""
+      required
+    /><br />
+
+       <label for="duree">Duree de l'intervention</label><br />
+    <input
+      id="duree"
+      type="number"
+      name="duree"
+      size="18"
+      value=""
+      placeholder="Saisir la durée de l'intervention"
+      required
+    /><br />
+
+
+    <label for="numero_pompe">Numéro de la pompe</label><br />
+    <select id="numero_pompe" name="numero_pompe" required>
+      <option value="">Sélectionner un numéro de pompe</option>
+      {% for numero_pompe in numero_pompe  %}
+      <option value="{{ numero_pompe.numero_pompe  }}">{{ numero_pompe.numero_pompe }}</option>
+      {% endfor %}</select
+      required
+    /><br />
+
+
+
+    <label for="id_client">Id du client </label><br />
+    <select id="id_client" name="id_client" required>
+      <option value="">Sélectionner un id du client </option>
+      {% for id_client in id_client  %}
+      <option value="{{ id_client.id_client  }}">{{ id_client.id_client }}</option>
+      {% endfor %}</select
+      required
+    /><br />
+
+
+    <input type="submit" value="Créer" name="Valider" />
+  </fieldset>
+</form>
+{% endblock %}
