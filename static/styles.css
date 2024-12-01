@@ -1,0 +1,153 @@
+body{
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+html{
+
+}
+/*BARRE DE NAV*/
+nav{
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: left;
+}
+nav a{
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+    padding: 10px;
+    font-size: 18px;
+}
+nav a:hover{
+    color: purple;
+}
+
+.dropdown {
+    display: inline-block;
+    position: relative;
+}
+
+.dropbtn {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+/*CONTENU*/
+.tableau{
+    margin: 20px auto;
+    border-collapse: collapse;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+.head-tableau{
+    background-color: #333;
+    color: white;
+}
+.tableau th, .tableau td{
+    border: 1px solid #333;
+    padding: 10px;
+}
+.tableau tr:nth-child(even){
+    background-color: #f9f9f9;
+}
+
+form{
+    margin: 20px auto;
+    padding: 20px;
+    width: 30%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    text-align: left;
+    border-radius: 15px;
+}
+
+form input{
+    padding: 10px;
+    margin: 10px auto;
+    width: 50%;
+    border: 1px solid #333;
+    border-radius: 5px;
+}
+form input[type="submit"]{
+    background-color: purple;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+select{
+    padding: 10px;
+    margin: 10px auto;
+    width: 50%;
+    border: 1px solid #333;
+    border-radius: 5px;
+}
+
+.bouton{
+    color: black;
+    padding: 10px 20px;
+    border: solid 1px purple;
+    background-color: rgba(128, 0, 128, 0.2);
+    margin-top: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+}
+.boutons{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: none;
+}
+.boutons a{
+    color: black;
+    padding: 8px 18px;
+    border: solid 1px purple;
+    background-color: rgba(128, 0, 128, 0.2);
+    margin-top: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+
+.alert-warning{
+    background-color: rgba(255, 47, 47, 0.4);
+    color: black;
+    padding-left: 20px;
+}
+.alert-success{
+    background-color: rgba(47, 255, 47, 0.4);
+    color: black;
+    padding-left: 20px;
+}
