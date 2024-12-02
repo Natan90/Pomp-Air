@@ -3,9 +3,8 @@
 {% block title %}
     <title>ajouter un achat</title>
 {% endblock %}
-
 {% block body %}
-  <h2>Ajouter un achat</h2>
+  <h2 style="display: block;text-align: center;">Ajouter un achat</h2>
   <form method="post" action="/achat/add" >
         <label for="id">Identifiant de l'achat</label><br>
         <input id="id" type="number" name="id" size="18" value="NULL" placeholder="Saisir l'id de l'achat" hidden><br>
